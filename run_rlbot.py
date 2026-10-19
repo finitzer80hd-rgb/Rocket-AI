@@ -1,6 +1,7 @@
 """Start an offline Rocket League match through RLBot v5."""
 from __future__ import annotations
 
+import sys
 import time
 from pathlib import Path
 
@@ -9,7 +10,11 @@ from rlbot.managers import MatchManager
 
 
 def main() -> None:
-    config = Path(__file__).resolve().with_name("rlbot.toml")
+    # In a PyInstaller build, configs live beside the EXE, not in the temp extraction dir.
+    root = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
+    config = root / "rlbot.toml"
+    if not config.is_file():
+        raise FileNotFoundError(f"Could not find match config: {config}")
     manager = MatchManager()
     try:
         manager.start_match(config)
