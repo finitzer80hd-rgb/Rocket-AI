@@ -47,8 +47,10 @@ jobs:
           Remove-Item worker_output.log,dist/ppo_smoke.zip -Force -ErrorAction SilentlyContinue
           Write-Host "Launching frozen PPO worker..."
           try {
-            & (Resolve-Path dist/RocketAI.exe).Path --worker-train --timesteps 1 --out (Join-Path (Resolve-Path dist).Path "ppo_smoke")
-            $workerExitCode = $LASTEXITCODE
+            $exePath = (Resolve-Path "dist/RocketAI.exe").Path
+            $outputPath = Join-Path (Resolve-Path "dist").Path "ppo_smoke"
+            $process = Start-Process -FilePath $exePath -ArgumentList @("--worker-train", "--timesteps", "1", "--out", $outputPath) -Wait -PassThru
+            $workerExitCode = $process.ExitCode
             Write-Host "Frozen PPO worker exit code: $workerExitCode"
           } catch {
             Write-Host "PowerShell caught an executable launch error: $_"
