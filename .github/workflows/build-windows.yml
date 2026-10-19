@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
           cache: pip
 
       - name: Install dependencies
@@ -36,6 +36,16 @@ jobs:
       - name: Build RocketAI desktop launcher
         run: |
           python -m PyInstaller --noconfirm --clean --windowed --onefile --name RocketAI --collect-all stable_baselines3 --collect-all gymnasium --collect-all torch --collect-all numpy --hidden-import train_ppo --hidden-import evaluate --hidden-import check_torch --hidden-import toy_env launcher.py
+
+      - name: Smoke-test PPO from the frozen Windows executable
+        shell: pwsh
+        run: |
+          & dist/RocketAI.exe --worker-train --timesteps 1 --out dist/ppo_smoke
+          if ($LASTEXITCODE -ne 0) {
+            if (Test-Path worker_output.log) { Get-Content worker_output.log }
+            throw "Packaged PPO smoke test failed with exit code $LASTEXITCODE"
+          }
+          if (!(Test-Path dist/ppo_smoke.zip)) { throw "Packaged PPO smoke test did not produce a model checkpoint" }
 
       - name: Build RLBot agent executable
         run: |
