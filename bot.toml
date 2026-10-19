@@ -1,0 +1,16 @@
+#:schema https://rlbot.org/schemas/agent.json
+[settings]
+name = "Rocket AI (Baseline)"
+loadout_file = "loadout.toml"
+root_dir = ""
+run_command = "venv\\Scripts\\python.exe rlbot_bot.py"
+run_command_linux = "venv/bin/python rlbot_bot.py"
+agent_id = "finitzer80hd-rgb/rocket-ai"
+
+[details]
+description = "Rocket AI integration baseline for offline RLBot matches."
+fun_fact = "The first step toward a simulation-trained policy."
+source_link = "https://github.com/finitzer80hd-rgb/Rocket-AI"
+developer = "Rocket AI project"
+language = "Python"
+tags = ["1v1"]
