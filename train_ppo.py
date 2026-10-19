@@ -1,7 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
+
+# The frozen PyInstaller build has trouble loading PyTorch's optional Dynamo
+# compiler stack. PPO does not require torch.compile, so disable that optional
+# path before importing PyTorch / Stable-Baselines3.
+os.environ.setdefault("TORCHDYNAMO_DISABLE", "1")
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_checker import check_env
