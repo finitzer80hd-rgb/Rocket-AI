@@ -1,9 +1,17 @@
-# Integration adapters
+# Rocket AI (starter)
 
-Implement these as separate modules once the core pipeline passes tests:
+A Windows-friendly starter for experimenting with reinforcement learning and packaging a desktop launcher.
 
-- `rocketsim_adapter.py`: map normalized observations/actions to the installed RocketSim API; validate coordinate frames, units, tick rate, reset behavior and collisions.
-- `rlbot_adapter.py`: map official RLBot game-state packets to the shared observation schema and map policy outputs to the supported controller-state object.
-- `live_observer.py`: ingest authorized live observations or replay files, with explicit recording consent and timestamps. It should not inject inputs into protected online matchmaking.
+## Build and run
 
-Do not assume a particular RocketSim or RLBot API version. Pin the chosen release and write a small contract test against its actual installed API before implementing the adapter.
+- Open the **Actions** tab and select **Build RocketAI for Windows**.
+- Open the latest successful run and download the `RocketAI-Windows-exe` artifact.
+- Extract the artifact and run `RocketAI.exe`.
+
+The workflow is located at `.github/workflows/build-windows.yml` and runs on pushes to `main` or `master`, or manually from Actions.
+
+## Current limitations
+
+The PPO environment is a small toy driving task used to verify the training pipeline. It is **not Rocket League physics** and the project does not yet control the actual game. RocketSim/RLBot adapters and replay ingestion are not implemented.
+
+The intended next step is to integrate a pinned, documented RocketSim and/or RLBot interface, validate observations and actions with contract tests, and train/evaluate in an authorized simulation environment. Do not use this project to evade anti-cheat or automate protected online matchmaking.
