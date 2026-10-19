@@ -1,17 +1,20 @@
-# Rocket AI (starter)
+# Rocket AI
 
-A Windows-friendly starter for experimenting with reinforcement learning and packaging a desktop launcher.
+Windows-friendly starter for reinforcement-learning experiments, RLBot v5 offline matches, and optional RocketSim simulation.
 
-## Build and run
+## Download the Windows build
 
-- Open the **Actions** tab and select **Build RocketAI for Windows**.
-- Open the latest successful run and download the `RocketAI-Windows-exe` artifact.
-- Extract the artifact and run `RocketAI.exe`.
+1. Open the **Actions** tab and select the latest successful **Build RocketAI for Windows** run.
+2. Download the **RocketAI-Windows-exe** artifact and extract it to a folder.
+3. Run `RocketAI.exe` for the desktop launcher.
+4. To start an offline RLBot match, follow `ROCKETSIM_RLBOT_SETUP.md` (included in the artifact) and run `RUN_RLBOT.bat`. The RLBot installer and Rocket League must already be set up.
 
-The workflow is located at `.github/workflows/build-windows.yml` and runs on pushes to `main` or `master`, or manually from Actions.
+Workflow: https://github.com/finitzer80hd-rgb/Rocket-AI/actions
 
-## Current limitations
+## Current capabilities and limitations
 
-The PPO environment is a small toy driving task used to verify the training pipeline. It is **not Rocket League physics** and the project does not yet control the actual game. RocketSim/RLBot adapters and replay ingestion are not implemented.
-
-The intended next step is to integrate a pinned, documented RocketSim and/or RLBot interface, validate observations and actions with contract tests, and train/evaluate in an authorized simulation environment. Do not use this project to evade anti-cheat or automate protected online matchmaking.
+- `RocketAIBot.exe` is an RLBot v5 bot entry point with a simple ball-chasing baseline for offline matches.
+- `rocketsim_smoke.py` checks a separately installed RocketSim Python binding and collision meshes.
+- The existing PPO trainer still uses a toy environment. RocketSim-backed PPO training, replay ingestion, and policy transfer are not yet implemented.
+- Native RocketSim bindings and collision meshes are not bundled in the EXE because they require a separate native setup.
+- This project is intended for local simulation and authorized offline RLBot matches, not anti-cheat evasion or unauthorized online matchmaking automation.
