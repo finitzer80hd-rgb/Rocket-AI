@@ -1,18 +1,18 @@
 # Automated Windows EXE builds
 
-This repository includes `.github/workflows/build-windows.yml`. Once the project is in a GitHub repository, GitHub Actions builds `RocketAI.exe` on every push to `main`/`master`, and also supports manual runs.
+The workflow at `.github/workflows/build-windows.yml` builds `RocketAI.exe` on every push to `main` or `master`, and supports manual runs.
 
-## One-time setup (no command line required)
-1. Sign in to GitHub and create a new repository.
-2. Upload the contents of this folder to the repository using GitHub's web UI (Add file → Upload files). Make sure `.github/workflows/build-windows.yml` is included.
-3. Commit the upload to `main`.
-4. Open the repository's **Actions** tab. Open the latest **Build RocketAI for Windows** run.
-5. When the run completes, download **RocketAI-Windows-exe** from the **Artifacts** section. Extract it and double-click `RocketAI.exe`.
-6. Every future commit/push automatically creates a new downloadable EXE artifact. You can also run the workflow manually from Actions → Build RocketAI for Windows → Run workflow.
+## Download the executable
+1. Open the repository's **Actions** tab.
+2. Select **Build RocketAI for Windows** and open the latest run.
+3. When the run succeeds, download the **RocketAI-Windows-exe** artifact and extract it.
+4. Run `RocketAI.exe`.
 
-## Important
-- GitHub Actions requires a GitHub account and the repository's Actions feature enabled.
-- Artifacts are retained for 30 days by this workflow.
-- The build includes PyTorch, which makes the executable large and the build slower.
-- The starter's PPO environment is a toy smoke-test environment, not Rocket League physics. RLBot/RocketSim integration is not implemented yet.
-- This workflow builds a Windows executable; it does not implement anti-cheat evasion or unauthorized matchmaking automation.
+Each successful workflow run creates a new artifact, retained for 30 days. The executable bundles Python and the project's dependencies; a separate Python installation should not be required to launch it.
+
+## Important limitations
+- GitHub Actions must be enabled for the repository.
+- The executable bundles PyTorch, so it can be large and take several minutes to build.
+- The current PPO environment is a toy smoke test, not Rocket League physics.
+- RLBot/RocketSim integration and replay ingestion are not implemented yet.
+- The project is intended for authorized local/simulation use, not anti-cheat evasion or unauthorized online matchmaking automation.
