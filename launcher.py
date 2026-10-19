@@ -8,8 +8,6 @@ import tkinter as tk
 from tkinter import messagebox, scrolledtext
 from pathlib import Path
 
-# In a PyInstaller one-file build, the app code lives in a temporary extraction
-# directory. Persistent outputs belong beside the executable (or project root).
 if getattr(sys, "frozen", False):
     _exe_dir = Path(sys.executable).resolve().parent
     WORK_DIR = _exe_dir.parent if _exe_dir.name.lower() == "dist" else _exe_dir
@@ -22,24 +20,22 @@ def _run_worker():
     if len(sys.argv) < 2:
         raise SystemExit("Missing worker command")
     command = sys.argv[1]
-    # Windowed PyInstaller builds may not provide stdout/stderr. Write worker
-    # output to a persistent file that the GUI reads after the subprocess exits.
     log_path = WORK_DIR / "worker_output.log"
     log_path.parent.mkdir(parents=True, exist_ok=True)
-    _worker_log = log_path.open("a", encoding="utf-8", buffering=1)
+    _worker_log = log_path.open("w", encoding="utf-8", buffering=1)
     sys.stdout = _worker_log
     sys.stderr = _worker_log
-    print("\\n=== Rocket AI worker:", command, "===")
+    print("\n=== Rocket AI worker:", command, "===")
     if command == "--worker-gpu":
-        from rocket_ai.tools.check_torch import main
+        from check_torch import main
         main()
     elif command == "--worker-train":
-        from rocket_ai.train_ppo import main
-        sys.argv = ["rocket_ai.train_ppo"] + sys.argv[2:]
+        from train_ppo import main
+        sys.argv = ["train_ppo"] + sys.argv[2:]
         main()
     elif command == "--worker-evaluate":
-        from rocket_ai.evaluate import main
-        sys.argv = ["rocket_ai.evaluate"] + sys.argv[2:]
+        from evaluate import main
+        sys.argv = ["evaluate"] + sys.argv[2:]
         main()
     else:
         raise SystemExit(f"Unknown worker command: {command}")
@@ -95,7 +91,7 @@ class RocketAILauncher:
                 worker_log = WORK_DIR / "worker_output.log"
                 if getattr(sys, "frozen", False) and worker_log.exists():
                     try:
-                        output += "\\n" + worker_log.read_text(encoding="utf-8", errors="replace")
+                        output = worker_log.read_text(encoding="utf-8", errors="replace")
                     except OSError:
                         pass
                 output = output.strip() or "(task finished; no output captured)"
