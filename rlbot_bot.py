@@ -38,16 +38,13 @@ class RocketAIBot(Bot):
 
         controls.steer = _clamp(angle * 4.0)
         controls.throttle = 1.0
-
-        distance = math.sqrt(dx * dx + dy * dy + float(ball_pos.z - car_pos.z) ** 2)
         speed = math.sqrt(
             float(car.physics.velocity.x) ** 2
             + float(car.physics.velocity.y) ** 2
             + float(car.physics.velocity.z) ** 2
         )
-        # Use boost only when broadly pointed toward the ball and not near top speed.
-        controls.boost = abs(angle) < 0.22 and speed < 2200 and car.boost > 10
-        # A conservative ground approach; aerial logic will be learned/added later.
+        # RLBot v5 PlayerInfo exposes boost_amount.
+        controls.boost = abs(angle) < 0.22 and speed < 2200 and car.boost_amount > 10
         controls.jump = False
         return controls
 
