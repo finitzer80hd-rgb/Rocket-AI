@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rocket-ai-starter"
-version = "0.1.1"
-description = "Modular Rocket League AI research starter"
+version = "0.2.0"
+description = "Rocket League AI starter with RLBot v5 and optional RocketSim support"
 requires-python = ">=3.11,<3.13"
 dependencies = [
   "numpy>=1.26",
@@ -19,9 +19,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.6"]
+rlbot = ["rlbot>=2.0.0.beta"]
 
 [tool.setuptools]
-py-modules = ["launcher", "train_ppo", "evaluate", "check_torch", "toy_env", "dataset"]
+py-modules = ["launcher", "train_ppo", "evaluate", "check_torch", "toy_env", "dataset", "rlbot_bot", "run_rlbot", "rocketsim_smoke"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
