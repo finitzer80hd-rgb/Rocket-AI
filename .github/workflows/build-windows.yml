@@ -41,15 +41,20 @@ jobs:
         run: |
           python -m PyInstaller --noconfirm --clean --console --onefile --name RocketAIBot --collect-all rlbot --collect-all rlbot_flatbuffers --hidden-import rlbot_bot rlbot_bot.py
 
+      - name: Build RLBot match runner executable
+        run: |
+          python -m PyInstaller --noconfirm --clean --console --onefile --name RocketAIRunner --collect-all rlbot --collect-all rlbot_flatbuffers --hidden-import run_rlbot run_rlbot.py
+
       - name: Assemble Windows package
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path dist/RocketAI-Windows | Out-Null
-          Copy-Item dist/RocketAI.exe dist/RocketAI-Windows/
-          Copy-Item dist/RocketAIBot.exe dist/RocketAI-Windows/
-          Copy-Item bot.toml,loadout.toml,rlbot.toml,RUN_RLBOT.bat,docs/ROCKETSIM_RLBOT_SETUP.md -Destination dist/RocketAI-Windows/
-          if (!(Test-Path "dist/RocketAI-Windows/RocketAI.exe")) { throw "RocketAI.exe missing" }
-          if (!(Test-Path "dist/RocketAI-Windows/RocketAIBot.exe")) { throw "RocketAIBot.exe missing" }
+          Copy-Item dist/RocketAI.exe,dist/RocketAIBot.exe,dist/RocketAIRunner.exe -Destination dist/RocketAI-Windows/
+          Copy-Item bot.toml,loadout.toml,rlbot.toml,RUN_RLBOT.bat -Destination dist/RocketAI-Windows/
+          Copy-Item docs/ROCKETSIM_RLBOT_SETUP.md -Destination dist/RocketAI-Windows/ROCKETSIM_RLBOT_SETUP.md
+          foreach ($file in @("RocketAI.exe","RocketAIBot.exe","RocketAIRunner.exe","bot.toml","loadout.toml","rlbot.toml","RUN_RLBOT.bat")) {
+            if (!(Test-Path "dist/RocketAI-Windows/$file")) { throw "$file missing from Windows package" }
+          }
 
       - name: Upload Windows package
         uses: actions/upload-artifact@v4
