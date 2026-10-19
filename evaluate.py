@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 from stable_baselines3 import PPO
 
-from rocket_ai.envs.toy_env import ToyDrivingEnv
+from toy_env import ToyDrivingEnv
 
 
 def main():
