@@ -1,13 +1,19 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-if not exist "venv\\Scripts\\python.exe" (
-  echo Missing project virtual environment.
-  echo Create it with: py -3.12 -m venv venv
-  echo Then run: venv\\Scripts\\python -m pip install -e ".[rlbot]"
-  pause
-  exit /b 1
+if exist "RocketAIRunner.exe" (
+  echo Starting Rocket AI in an RLBot v5 offline match...
+  "RocketAIRunner.exe"
+  if errorlevel 1 pause
+  exit /b
 )
-echo Starting Rocket AI in an RLBot v5 offline match...
-"venv\\Scripts\\python.exe" run_rlbot.py
-if errorlevel 1 pause
+if exist "venv\\Scripts\\python.exe" (
+  echo Starting source version of Rocket AI...
+  "venv\\Scripts\\python.exe" run_rlbot.py
+  if errorlevel 1 pause
+  exit /b
+)
+echo Could not find RocketAIRunner.exe or the source venv.
+echo For the packaged build, re-download the full RocketAI-Windows-exe artifact.
+echo For source, create venv with Python 3.12 and install -e ".[rlbot]".
+pause
