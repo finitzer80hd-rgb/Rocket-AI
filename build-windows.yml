@@ -1,0 +1,46 @@
+name: Build RocketAI for Windows
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m pip install pyinstaller pytest
+
+      - name: Compile and test
+        run: |
+          python -m compileall -q rocket_ai launcher.py
+          python -m pytest -q
+
+      - name: Build single-file Windows executable
+        run: |
+          python -m PyInstaller --noconfirm --clean --windowed --onefile --name RocketAI --collect-all stable_baselines3 --collect-all gymnasium --collect-all torch --collect-all numpy --hidden-import rocket_ai.train_ppo --hidden-import rocket_ai.evaluate --hidden-import rocket_ai.tools.check_torch launcher.py
+
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RocketAI-Windows-exe
+          path: dist/RocketAI.exe
+          if-no-files-found: error
+          retention-days: 30

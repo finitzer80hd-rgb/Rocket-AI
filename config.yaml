@@ -1,0 +1,15 @@
+seed: 42
+training:
+  total_timesteps: 200000
+  learning_rate: 0.0003
+  n_steps: 2048
+  batch_size: 256
+  gamma: 0.99
+  device: auto
+paths:
+  demonstrations: data/demonstrations.jsonl
+  checkpoints: runs/
+environment:
+  name: toy
+  observation_schema_version: 1
+  action_schema_version: 1
