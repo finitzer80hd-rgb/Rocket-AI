@@ -3,8 +3,8 @@
 name = "Rocket AI (Baseline)"
 loadout_file = "loadout.toml"
 root_dir = ""
-run_command = "venv\\Scripts\\python.exe rlbot_bot.py"
-run_command_linux = "venv/bin/python rlbot_bot.py"
+run_command = "RocketAIBot.exe"
+run_command_linux = "python rlbot_bot.py"
 agent_id = "finitzer80hd-rgb/rocket-ai"
 
 [details]
