@@ -4,10 +4,24 @@ import argparse
 import os
 from pathlib import Path
 
-# The frozen PyInstaller build has trouble loading PyTorch's optional Dynamo
-# compiler stack. PPO does not require torch.compile, so disable that optional
-# path before importing PyTorch / Stable-Baselines3.
-os.environ.setdefault("TORCHDYNAMO_DISABLE", "1")
+# PPO does not need torch.compile. In the frozen Windows build, PyTorch's
+# optional Dynamo compiler imports torch._numpy and can fail during optimizer
+# initialization. Replace the compile decorator with an identity decorator
+# before Stable-Baselines3 imports torch.optim. This affects performance
+# compilation only, not PPO's numerical training operations.
+os.environ["TORCHDYNAMO_DISABLE"] = "1"
+
+import torch
+
+
+def _disable_optional_torch_compile(fn=None, **kwargs):
+    """No-op replacement for PyTorch's optional compile decorator."""
+    if fn is None:
+        return lambda wrapped: wrapped
+    return fn
+
+
+torch._compile = _disable_optional_torch_compile
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_checker import check_env
