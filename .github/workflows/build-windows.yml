@@ -26,9 +26,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e ".[rlbot,dev]"
-          # Keep the Windows PPO stack on a known-compatible set instead of
-          # allowing a new PyTorch release to break frozen-executable imports.
-          python -m pip install --upgrade --force-reinstall "numpy==1.26.4" "gymnasium==1.0.0" "stable-baselines3==2.4.1" "torch==2.5.1"
+          # PyTorch 2.5 added a Dynamo-wrapped optimizer path that imports torch._numpy;
+          # that optional module crashes in this frozen build. Use the compatible
+          # PyTorch 2.4.1 wheel, which avoids that 2.5-specific startup path.
+          python -m pip install --upgrade --force-reinstall "numpy==1.26.4" "gymnasium==1.0.0" "stable-baselines3==2.4.1" "torch==2.4.1"
           python -m pip install "pyinstaller==6.11.1"
 
       - name: Compile and test
