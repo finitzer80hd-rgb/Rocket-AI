@@ -9,11 +9,16 @@ This project includes an RLBot v5 bot entry point and a RocketSim Python-binding
 
 Prerequisites:
 - Rocket League installed through Steam (the checked-in `rlbot.toml` currently selects Steam).
-- Python 3.12 recommended for the current official RLBot Python example.
 - RLBot v5 installed/configured using the official instructions: https://wiki.rlbot.org/v5/
 - Downloaded Windows package or the source project.
 
-For source development:
+For the packaged build:
+1. Open the latest successful **Build RocketAI for Windows** run under GitHub Actions and download the `RocketAI-Windows-exe` artifact.
+2. Extract all files into one folder.
+3. Install/configure RLBot v5 and Rocket League first.
+4. Run `RUN_RLBOT.bat`. It starts `RocketAIRunner.exe`, which loads `rlbot.toml` and launches the match. The config starts a local human on Blue and Rocket AI on Orange.
+
+For source development, install Python 3.12 and run:
 
 ```bat
 py -3.12 -m venv venv
@@ -22,7 +27,7 @@ venv\Scripts\python.exe -m pip install -e ".[rlbot]"
 RUN_RLBOT.bat
 ```
 
-For the packaged build, first install/configure RLBot v5 and Rocket League. Then run `RUN_RLBOT.bat` from the extracted package. The included `bot.toml` starts `RocketAIBot.exe`. The match config runs a local human on Blue and Rocket AI on Orange. It does not automate online matchmaking. If you use Epic instead of Steam, change `launcher = "Steam"` in `rlbot.toml` to the launcher supported by your RLBot installation.
+If you use Epic instead of Steam, change `launcher = "Steam"` in `rlbot.toml` to the launcher supported by your RLBot installation. This is an offline RLBot match, not online matchmaking automation.
 
 The current bot chases the ball and uses boost conservatively. It is a connectivity baseline, not a trained policy. The next step is to load a saved policy inside `RocketAIBot.get_output` after observation/action dimensions and normalization are stable.
 
@@ -45,8 +50,8 @@ A successful run initializes Soccar, adds an Octane, advances 120 simulation tic
 
 ## 3. Current status and next step
 
-- RLBot v5 match config, Python bot, and run script are checked in.
-- Windows CI builds the launcher and a separate RLBot agent executable, plus the configs needed for an offline match.
+- RLBot v5 match config, Python bot, and match runner are checked in.
+- Windows CI is configured to build the launcher, RLBot agent EXE, and match-runner EXE.
 - RocketSim binding smoke test is checked in; it requires local native bindings and collision meshes.
 - The PPO demo still uses the toy environment. No RocketSim-trained policy is claimed yet.
 - Use these tools only in authorized offline matches and local simulations; this project does not bypass anti-cheat or automate protected online matchmaking.
