@@ -43,12 +43,32 @@ jobs:
       - name: Smoke-test PPO from the frozen Windows executable
         shell: pwsh
         run: |
-          & dist/RocketAI.exe --worker-train --timesteps 1 --out dist/ppo_smoke
-          if ($LASTEXITCODE -ne 0) {
-            if (Test-Path worker_output.log) { Get-Content worker_output.log }
-            throw "Packaged PPO smoke test failed with exit code $LASTEXITCODE"
+          $ErrorActionPreference = "Continue"
+          Remove-Item worker_output.log,dist/ppo_smoke.zip -Force -ErrorAction SilentlyContinue
+          Write-Host "Launching frozen PPO worker..."
+          try {
+            & (Resolve-Path dist/RocketAI.exe).Path --worker-train --timesteps 1 --out (Join-Path (Resolve-Path dist).Path "ppo_smoke")
+            $workerExitCode = $LASTEXITCODE
+            Write-Host "Frozen PPO worker exit code: $workerExitCode"
+          } catch {
+            Write-Host "PowerShell caught an executable launch error: $_"
+            $workerExitCode = 999
           }
-          if (!(Test-Path dist/ppo_smoke.zip)) { throw "Packaged PPO smoke test did not produce a model checkpoint" }
+
+          if (Test-Path worker_output.log) {
+            Write-Host "===== worker_output.log ====="
+            Get-Content worker_output.log
+            Write-Host "===== end worker_output.log ====="
+          } else {
+            Write-Host "ERROR: worker_output.log was not created. The executable may have crashed before entering the Python worker."
+          }
+
+          if ($workerExitCode -ne 0) {
+            throw "Packaged PPO smoke test failed with exit code $workerExitCode. See diagnostics above."
+          }
+          if (!(Test-Path dist/ppo_smoke.zip)) {
+            throw "Packaged PPO smoke test exited successfully but did not produce dist/ppo_smoke.zip."
+          }
 
       - name: Build RLBot agent executable
         run: |
